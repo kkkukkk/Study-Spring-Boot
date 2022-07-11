@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>슬롯머신</title>
+
+    <style>
+
+        .slotMachine{
+            display: flex;
+        }
+        .slotMachine > div{
+            border:1px solid black;
+            width:100px;
+            height:100px;
+        }
+        .slotMachine > div > div{
+            border: 1px solid black;
+            width: 90px;
+            height: 90px;
+            border-radius: 100%;
+            margin: auto;
+            margin-top: 5px;
+        }
+
+    </style>
+
+</head>
+
+<form action="/hw/slotmachine/game" method="post" name="gameForm">
+<div class="slotMachine">
+    <div class="slotBox">
+        <div id="slotBoxInner1"></div>
+    </div>
+    <div class="slotBox">
+        <div id="slotBoxInner2"></div>
+    </div>
+    <div class="slotBox">
+        <div id="slotBoxInner3"></div>
+    </div>
+</div>
+<div>
+    <input type="button" onclick="randomColor()" value="돌리기" id="randomBtn">
+</div>
+<div>
+    <input type="hidden" id="count" name="cnt">
+</div>
+<div><span id="spanBtn"></span></div>
+</form>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let spanBtn = document.getElementById("spanBtn");
+    let cnt = 0;
+
+    function randomColor(){
+        let firstSlot = document.getElementById("slotBoxInner1");
+        let secondSlot = document.getElementById("slotBoxInner2");
+        let thirdSlot = document.getElementById("slotBoxInner3");
+
+        let colors = ['red','yellow','green'];
+        let a = Math.random();
+        let b = Math.random();
+        let c = Math.random();
+        let ra = Math.floor(a*3);
+        let rb = Math.floor(b*3);
+        let rc = Math.floor(c*3);
+
+        firstSlot.style.backgroundColor = colors[ra];
+        secondSlot.style.backgroundColor = colors[rb];
+        thirdSlot.style.backgroundColor = colors[rc];
+
+        cnt += 1000;
+        document.getElementById("count").value = cnt;
+
+        if (ra==rb && rb==rc){
+            document.getElementById("randomBtn").disabled = true;
+            spanBtn.innerHTML = "<button onclick='go()'>결과</button>";
+        }
+    }
+
+    function go(){
+        gameForm.submit();
+    }
+</script>
+</html>

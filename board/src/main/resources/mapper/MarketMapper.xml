@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.board.mapper.MarketMapper">
+
+    <insert id="insert">
+        <selectKey keyProperty="marketNumber" resultType="long" order="BEFORE">
+            SELECT SEQ_MARKET.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO TBL_MARKET
+        (MARKET_NUMBER, MARKET_NAME, MARKET_OWNER, MARKET_LOCATION)
+        VALUES (#{marketNumber},#{marketName},#{marketOwner},#{marketLocation})
+    </insert>
+
+    <update id="update">
+        UPDATE TBL_MARKET
+        SET MARKET_NAME = #{marketName}, MARKET_OWNER = #{marketOwner}, MARKET_LOCATION = #{marketLocation}
+        WHERE MARKET_NUMBER = #{marketNumber}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM TBL_MARKET
+        WHERE MARKET_NUMBER = #{marketNumber}
+    </delete>
+
+    <select id="detail" resultType="marketVO">
+        SELECT MARKET_NUBMER, MARKET_NAME, MARKET_OWNER, MARKET_LOCATION, MARKET_REGISTER_DATE
+        FROM TBL_MARKET
+        WHERE MARKET_NUBMER = #{marketNumber}
+    </select>
+
+    <select id="getList" resultType="marketVO">
+        <![CDATA[
+        SELECT MARKET_NUBMER, MARKET_NAME, MAREKT_OWNER, MARKET_LOCATION, MARKET_REGISTER_DATE
+        FROM TBL_MARKET
+        (
+            SELECT MARKET_NUBMER, MARKET_NAME, MARKET_OWNER, MARKET_LOCATION, MARKET_REGISTER_DATE
+            FROM TBL_MARKET
+            WHERE
+        ]]>
+        <trim prefix="(" prefixOverrides="OR" suffix=") AND">
+            <foreach item="type" collection="types">
+                <trim prefix="OR">
+                    <choose>
+                        <when test="type == 'T'.toString()">
+                            (BOARD_TITLE LIKE '%'||#{keyword}||'%')
+                        </when>
+                        <when test="type == 'C'.toString()">
+                            (BOARD_CONTENT LIKE '%'||#{keyword}||'%')
+                        </when>
+                        <when test="type == 'W'.toString()">
+                            (BOARD_WRITER LIKE '%'||#{keyword}||'%')
+                        </when>
+                    </choose>
+                </trim>
+            </foreach>
+        </trim>
+        <![CDATA[
+            ROWNUM <= #{pageNum} * #{amount}
+        )
+        WHERE RN > (#{pageNum}-1) * #{amount}
+        ]]>
+    </select>
+
+
+</mapper>

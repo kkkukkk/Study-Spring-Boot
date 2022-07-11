@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>노래방</title>
+</head>
+<body>
+
+<form action="/ex/sing" method="post" name="singForm">
+점수 : <input type="text" name="singPoint"><br>
+    <span class="message"></span>
+    <input type="button" value="결과보기" onclick="result()">
+</form>
+
+</body>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function result(){
+        if(parseInt(singForm.singPoint.value) > 100){
+            $(".message").text("100점 아래로 입력하세요!");
+            return;
+        }else if(parseInt(singForm.singPoint.value) < 0){
+            $(".message").text("0점 위로 입력하세요!");
+            return;
+        }
+        singForm.submit();
+    }
+</script>
+</html>

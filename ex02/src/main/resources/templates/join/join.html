@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form action="/ex/join" method="post" name="joinForm">
+    <div>
+        <input type="text" name="userId">
+    </div>
+    <div>
+        <input type="password" name="userPw">
+    </div>
+    <span class="message"></span>
+    <br>
+    <input type="button" value="로그인" onclick="join()">
+</form>
+
+
+</body>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function join(){
+        if(!joinForm.userId.value){
+            $('.message').text("아이디를 입력해 주세요");
+            $('.message').css("color","red");
+            return;
+        }else if(!joinForm.userPw.value){
+            $('.message').text("비밀번호를 입력해 주세요");
+            $('.message').css("color","red");
+            return;
+        }
+        joinForm.submit();
+    }
+</script>
+</html>

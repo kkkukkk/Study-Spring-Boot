@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>퇴근</title>
+</head>
+<body>
+
+<h1 th:object="${workVO}">
+    현재 시각 : <span th:text="*{time}"></span><br>
+    <span th:text="*{name} + '님!'"></span> 😎 퇴근입니다 내일봐요~ 😎
+</h1>
+
+</body>
+</html>

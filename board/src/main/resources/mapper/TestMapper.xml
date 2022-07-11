@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.board.mapper.TestMapper">
+
+    <insert id="insert">
+        <selectKey keyProperty="testNumber" resultType="long" order="BEFORE">
+            SELECT SEQ_TEST.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO TBL_TEST
+        (TEST_NUMBER, BOARD_BNO, TEST_TITLE, TEST_CONTENT, TEST_WRITER)
+        VALUES (#{testNumber}, #{boardBno}, #{testTitle}, #{testContent}, #{testWriter})
+    </insert>
+
+    <select id="detail" resultType="testVO">
+        SELECT TEST_NUMBER, BOARD_BNO, TEST_TITLE, TEST_CONTENT, TEST_WRITER, TEST_REGISTER_DATE, TEST_UPDATE_DATE
+        FROM TBL_TEST
+        WHERE TEST_NUMBER = #{testNumber}
+    </select>
+
+    <delete id="delete">
+        DELETE FROM TBL_TEST
+        WHERE TEST_NUMBER = #{testNumber}
+    </delete>
+
+    <update id="update">
+        UPDATE TBL_TEST
+        SET TEST_TITLE = #{testTitle}, TEST_CONTENT = #{testContent}, TEST_WRITER = #{testWriter}, TEST_UPDATE_DATE = SYSDATE
+        WHERE TEST_NUMBER = #{testNumber}
+    </update>
+
+    <select id="getList" resultType="testVO">
+        <!--   부등호가 태그로 인식되는 것 방지     -->
+        <![CDATA[
+        SELECT TEST_NUMBER, BOARD_BNO, TEST_TITLE, TEST_CONTENT, TEST_WRITER, TEST_REGISTER_DATE, TEST_UPDATE_DATE
+        FROM
+        (
+            SELECT /*+ INDEX_DESC(TBL_REPLY PK_REPLY) */
+            ROWNUM RN, TEST_NUMBER, BOARD_BNO, TEST_TITLE, TEST_CONTENT, TEST_WRITER, TEST_REGISTER_DATE, TEST_UPDATE_DATE
+            FROM TBL_TEST
+            WHERE
+        ]]>
+            <trim prefix="(" prefixOverrides="OR" suffix=") AND">
+                <foreach item="type" collection="types">
+                    <trim prefix="OR">
+                        <choose>
+                            <when test="type == 'T'.toString()">
+                                (TEST_TITLE LIKE '%'||#{keyword}||'%')
+                            </when>
+                            <when test="type == 'C'.toString()">
+                                (TEST_CONTENT LIKE '%'||#{keyword}||'%')
+                            </when>
+                            <when test="type == 'W'.toString()">
+                                (TEST_WRITER LIKE '%'||#{keyword}||'%')
+                            </when>
+                        </choose>
+                    </trim>
+                </foreach>
+            </trim>
+        <![CDATA[
+            ROWNUM <= #{pageNum} * #{amount}
+        )
+        WHERE RN > (#{pageNum}-1) * #{amount}
+        ]]>
+    </select>
+
+
+</mapper>
